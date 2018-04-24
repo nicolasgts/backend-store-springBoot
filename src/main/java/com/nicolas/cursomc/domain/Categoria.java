@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 public class Categoria implements Serializable {
 	
@@ -21,6 +23,13 @@ public class Categoria implements Serializable {
 	private Integer id;
 	private String nome;
 	
+	/* this annotation is because is happening a cyclic reference between Products and Categories,
+	 * so when the object's JSON will be serializable, our system go to Products and get the categories
+	 * then go to categories and get the products and generate an infinite loop . To solve this problem  we use the 
+	 * @JsonManagedReference here ( where we will get the categories and its products) and in the another class we use
+	 * @JsonBackReference
+	 */
+	@JsonManagedReference 
 	@ManyToMany(mappedBy="categorias")
 	private List<Produto> produtos = new ArrayList<>();
 	
